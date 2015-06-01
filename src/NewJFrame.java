@@ -1,6 +1,6 @@
 
 import java.util.ArrayList;
-
+import java.sql.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -143,29 +143,35 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        Usuario admin = new Usuario("admin","admin");
-        String us = jTextField1.getText();
-        String pw = jPasswordField1.getText();
+        try{
+        String usuario = jTextField1.getText();
+        String senha = jPasswordField1.getText();
         
-        if(admin.username == null ? us != null : !admin.username.equals(us)){
-            jDialog1.pack();
-            jDialog1.setVisible(true);
-                jLabel5.setText("Usuário inválido");
-            
-        }else if(pw == null ? admin.password != null : !pw.equals(admin.password)){
-            jDialog1.pack();
-            jDialog1.setVisible(true);
-            jLabel5.setText("Senha inválida");
-            
+            Connection con=null;
+        
+        Class.forName("oracle.jdbc.driver.OracleDriver");
+        con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE","pedro","123456");
+        PreparedStatement pstmt = con.prepareStatement("Select * from Usuario where email = ?");
+        pstmt.setString(1,usuario);
+       
+        ResultSet rs = pstmt.executeQuery();
+        
+        
+        if(rs.next()){
+          System.out.println("Usuario já cadastrado");
+        }else if(jPasswordField1.getText().isEmpty()){
+           System.out.println("Insira uma senha");
+        } else{
+            PreparedStatement inc = con.prepareStatement("Insert into Usuario (email,senha) values(?,?)");
+            inc.setString(1, usuario);
+            inc.setString(2,senha);
+            inc.execute();
+            System.out.println("Cadastro realizado");
         }
-        else{
-            
-            jDialog1.pack();
-            jDialog1.setVisible(true);
-            jLabel5.setText("Usuário Logado:"+admin.username);
-                    
-                    }
-                                            
+        
+        }catch(Exception e){
+            e.printStackTrace();
+        }                                    
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

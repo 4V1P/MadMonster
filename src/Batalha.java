@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Batalha {
@@ -35,6 +36,14 @@ public class Batalha {
        b.diminuirQntDeDeCartas();
        return retorno;
         
+    }
+    
+    public void criarMao(Baralho b){
+        ArrayList<Carta> cmao = new ArrayList<>();
+        
+        for(int x=0; x<12; x++){
+        cmao.add(comprarCarta(b));
+        }
     }
     
 }
